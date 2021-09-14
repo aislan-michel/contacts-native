@@ -1,9 +1,6 @@
-﻿import {StyleSheet, Text, TouchableOpacity, TouchableOpacityProps} from "react-native";
+﻿import {StyleSheet, Text, TouchableOpacity} from "react-native";
 import React from "react";
-
-interface IButtonProps extends TouchableOpacityProps {
-    title: string;
-}
+import {IButtonProps} from "../interfaces/IButtonProps";
 
 export function Button({ title, ...rest }: IButtonProps) {
     return (
