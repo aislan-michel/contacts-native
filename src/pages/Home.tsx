@@ -86,8 +86,6 @@ export function Home() {
         setName('');
         setEmail('');
         setTelephone('');
-
-        //storage.setItem('mykey', JSON.stringify(pessoas));
     }
 
     function handleRemovePerson(id: string): void {
