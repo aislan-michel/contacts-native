@@ -10,27 +10,39 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Home() {    
     const storageName: string = 'person:storage';
-    let storagedPersons: IPerson[] = [];
     
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [telephone, setTelephone] = useState('');
+    
+    const [persons, setPersons] = useState<IPerson[]>([]);
 
-    const [persons, setPersons] = useState<IPerson[]>(storagedPersons);
-        
     useEffect(() => {
-        (async function (){
-            await AsyncStorage.setItem(
-                storageName,
-                JSON.stringify(persons)
-            );
-
-            const storage = await AsyncStorage.getItem(storageName);
-            storagedPersons = storage ? JSON.parse(storage) : [];
+        async function loadStorage(){
+            const storagedPersons = await AsyncStorage.getItem(storageName);
             
-            console.log(storagedPersons)
-        })();
+            if(storagedPersons){
+                setPersons(JSON.parse(storagedPersons));
+            }
+        }
         
+        loadStorage();
+    }, []);
+    
+    useEffect(() => {
+        async function removeAll(){
+            await AsyncStorage.removeItem(storageName);
+        }
+        
+        removeAll();
+    }, []);
+    
+    useEffect(() => {
+        async function saveStorage(){
+            await AsyncStorage.setItem(storageName, JSON.stringify(persons));
+        }
+
+        saveStorage();
     }, [persons]);
     
     function validations(): boolean {
