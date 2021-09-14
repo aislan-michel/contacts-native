@@ -1,4 +1,4 @@
-﻿import React, {useState} from 'react';
+﻿import React, {useEffect, useState} from 'react';
 import {Text, View, StyleSheet, TextInput, Platform, FlatList, Alert} from 'react-native';
 import {Button} from "../components/Button";
 import {IPerson} from "../interfaces/IPerson";
@@ -6,13 +6,32 @@ import {PersonCard} from "../components/PersonCard";
 import {IsNullOrEmpty} from "../validations/IsNullOrEmpty";
 import {IsEmail} from "../validations/IsEmail";
 import {IsTelephone} from "../validations/IsTelephone";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function Home() {    
+    const storageName: string = 'person:storage';
+    let storagedPersons: IPerson[] = [];
+    
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [telephone, setTelephone] = useState('');
 
-    const [persons, setPersons] = useState<IPerson[]>([]);
+    const [persons, setPersons] = useState<IPerson[]>(storagedPersons);
+        
+    useEffect(() => {
+        (async function (){
+            await AsyncStorage.setItem(
+                storageName,
+                JSON.stringify(persons)
+            );
+
+            const storage = await AsyncStorage.getItem(storageName);
+            storagedPersons = storage ? JSON.parse(storage) : [];
+            
+            console.log(storagedPersons)
+        })();
+        
+    }, [persons]);
     
     function validations(): boolean {
         const title: string = 'Opss...';
